@@ -21,7 +21,7 @@ export function TodoScreen() {
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <View style={styles.header}>
           <View>
-            <Text style={styles.headerTitle}>My Tasks</Text>
+            <Text style={styles.headerTitle}>Vault Todos</Text>
             <Text style={styles.headerSubtitle}>
               {stats.active === 0 ? 'All done!' : `${stats.active} task${stats.active !== 1 ? 's' : ''} remaining`}
             </Text>
