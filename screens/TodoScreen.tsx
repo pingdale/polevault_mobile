@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import { useTodos } from '@/hooks/useTodos';
 import { TodoItem } from '@/components/TodoItem';
@@ -6,10 +6,13 @@ import { AddTodoInput } from '@/components/AddTodoInput';
 import { FilterTabs } from '@/components/FilterTabs';
 import { EmptyState } from '@/components/EmptyState';
 import { ScreenContainer } from '@/components/ScreenContainer';
+import { TodoDetailModal } from '@/components/TodoDetailModal';
+import { Todo } from '@/types/todo';
 import { colors, spacing, typography } from '@/theme';
 
 export function TodoScreen() {
-  const { todos, filter, setFilter, isLoading, addTodo, toggleTodo, deleteTodo, clearCompleted, stats } = useTodos();
+  const { todos, filter, setFilter, isLoading, addTodo, updateTodo, toggleTodo, deleteTodo, clearCompleted, stats } = useTodos();
+  const [editingTodo, setEditingTodo] = useState<Todo | null>(null);
 
   const counts = { all: stats.total, active: stats.active, completed: stats.completed };
 
@@ -38,7 +41,14 @@ export function TodoScreen() {
         <FlatList
           data={todos}
           keyExtractor={item => item.id}
-          renderItem={({ item }) => <TodoItem todo={item} onToggle={toggleTodo} onDelete={deleteTodo} />}
+          renderItem={({ item }) => (
+            <TodoItem
+              todo={item}
+              onToggle={toggleTodo}
+              onDelete={deleteTodo}
+              onEdit={setEditingTodo}
+            />
+          )}
           contentContainerStyle={[styles.listContent, todos.length === 0 && styles.listContentEmpty]}
           ListEmptyComponent={isLoading ? null : <EmptyState filter={filter} />}
           showsVerticalScrollIndicator={false}
@@ -46,6 +56,12 @@ export function TodoScreen() {
           keyboardShouldPersistTaps="handled"
         />
       </KeyboardAvoidingView>
+      <TodoDetailModal
+        todo={editingTodo}
+        visible={editingTodo !== null}
+        onClose={() => setEditingTodo(null)}
+        onSave={updateTodo}
+      />
     </ScreenContainer>
   );
 }

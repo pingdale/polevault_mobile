@@ -3,3 +3,4 @@ export { TodoItem } from './TodoItem';
 export { AddTodoInput } from './AddTodoInput';
 export { FilterTabs } from './FilterTabs';
 export { EmptyState } from './EmptyState';
+export { TodoDetailModal } from './TodoDetailModal';

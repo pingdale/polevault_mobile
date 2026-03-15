@@ -7,9 +7,10 @@ interface TodoItemProps {
   todo: Todo;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
+  onEdit: (todo: Todo) => void;
 }
 
-export function TodoItem({ todo, onToggle, onDelete }: TodoItemProps) {
+export function TodoItem({ todo, onToggle, onDelete, onEdit }: TodoItemProps) {
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
   const handleToggle = () => {
@@ -27,10 +28,15 @@ export function TodoItem({ todo, onToggle, onDelete }: TodoItemProps) {
           {todo.completed && <Text style={styles.checkmark}>✓</Text>}
         </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleToggle} activeOpacity={0.7} style={styles.textArea}>
+      <TouchableOpacity onPress={() => onEdit(todo)} activeOpacity={0.7} style={styles.textArea}>
         <Text style={[styles.todoText, todo.completed && styles.todoTextCompleted]} numberOfLines={3}>
           {todo.text}
         </Text>
+        {todo.description ? (
+          <Text style={[styles.descriptionText, todo.completed && styles.descriptionTextCompleted]} numberOfLines={2}>
+            {todo.description}
+          </Text>
+        ) : null}
       </TouchableOpacity>
       <TouchableOpacity onPress={() => onDelete(todo.id)} activeOpacity={0.6} style={styles.deleteButton} hitSlop={{ top: 8, bottom: 8, left: 8, right: 4 }}>
         <Text style={styles.deleteIcon}>✕</Text>
@@ -41,13 +47,15 @@ export function TodoItem({ todo, onToggle, onDelete }: TodoItemProps) {
 
 const styles = StyleSheet.create({
   container: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surface, borderRadius: radius.lg, paddingVertical: spacing.lg, paddingHorizontal: spacing.lg, marginBottom: spacing.sm, ...shadows.sm },
-  checkArea: { marginRight: spacing.md },
+  checkArea: { marginRight: spacing.md, alignSelf: 'flex-start', paddingTop: 2 },
   checkbox: { width: 26, height: 26, borderRadius: radius.full, borderWidth: 2, borderColor: colors.border, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surface },
   checkboxChecked: { backgroundColor: colors.success, borderColor: colors.success },
   checkmark: { color: colors.textInverse, fontSize: 13, fontWeight: typography.weight.bold, lineHeight: 16 },
   textArea: { flex: 1, paddingRight: spacing.sm },
   todoText: { fontSize: typography.size.md, fontWeight: typography.weight.regular, color: colors.textPrimary, lineHeight: typography.size.md * typography.lineHeight.normal },
   todoTextCompleted: { color: colors.completedText, textDecorationLine: 'line-through' },
-  deleteButton: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center', borderRadius: radius.full, backgroundColor: colors.surfaceSecondary },
+  descriptionText: { fontSize: typography.size.sm, color: colors.textSecondary, marginTop: spacing.xs, lineHeight: typography.size.sm * typography.lineHeight.normal },
+  descriptionTextCompleted: { color: colors.completedText },
+  deleteButton: { width: 32, height: 32, alignItems: 'center', justifyContent: 'center', borderRadius: radius.full, backgroundColor: colors.surfaceSecondary, alignSelf: 'flex-start', marginTop: 2 },
   deleteIcon: { fontSize: 11, color: colors.textTertiary, fontWeight: typography.weight.bold },
 });
